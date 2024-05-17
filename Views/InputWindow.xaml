@@ -1,0 +1,27 @@
+﻿<Window x:Class="AutoCAD_Align_Structure.Views.InputWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AutoCAD_Align_Structure.Views"
+             mc:Ignorable="d" 
+             x:Name="window"
+             SizeToContent="WidthAndHeight">
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Span Count:" Margin="5 5 5 0"/>
+            <TextBox Text="{Binding SpanCount, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+            <TextBlock Text="Protrusion Length:" Margin="5 5 5 0"/>
+            <TextBox Text="{Binding ProtrusionLength, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+            <TextBlock Text="Embedment Length:" Margin="5 5 5 0"/>
+            <TextBox Text="{Binding EmbedmentLength, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="OK" Command="{Binding OKCommand}" CommandParameter="{Binding ElementName=window}" Margin="5" Width="100"/>
+                <Button Content="Cancel" Command="{Binding CancelCommand}"  CommandParameter="{Binding ElementName=window}" Margin="5" Width="100"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
