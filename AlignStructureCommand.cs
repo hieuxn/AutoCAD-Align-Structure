@@ -11,10 +11,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 
-[assembly: CommandClass(typeof(AutoCAD_Align_Structure.MyCommands))]
+[assembly: CommandClass(typeof(AutoCAD_Align_Structure.AlignStructureCommand))]
 namespace AutoCAD_Align_Structure
 {
-	public class MyCommands
+	public class AlignStructureCommand
 	{
 		private const string UPPER_BLOCK_NAME = "A$C743d0799";
 		private const string LOWER_BLOCK_NAME = "A$C5ad3868f";
