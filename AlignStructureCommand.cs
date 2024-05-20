@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using AutoCAD_Align_Structure.Models;
+using AutoCAD_Align_Structure.Utils;
 using AutoCAD_Align_Structure.Views;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -9,19 +10,18 @@ using Autodesk.AutoCAD.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 
 [assembly: CommandClass(typeof(AutoCAD_Align_Structure.AlignStructureCommand))]
 namespace AutoCAD_Align_Structure
 {
 	public class AlignStructureCommand
 	{
-		private const string UPPER_BLOCK_NAME = "A$C743d0799";
-		private const string LOWER_BLOCK_NAME = "A$C5ad3868f";
 
 		[CommandMethod("StructureGroup", "AutoAlign", "AutoAlign", CommandFlags.Modal | CommandFlags.UsePickSet)]
 		public void AutoAlign()
 		{
+			if (false == LoadRecords()) return;
+
 			var document = Application.DocumentManager.MdiActiveDocument;
 			var editor = document.Editor;
 			var database = document.Database;
@@ -30,8 +30,8 @@ namespace AutoCAD_Align_Structure
 
 			using var transaction = database.TransactionManager.StartTransaction();
 
-			if (FindEntityByName(transaction, document, UPPER_BLOCK_NAME) is not { } upperBlock) return;
-			if (FindEntityByName(transaction, document, LOWER_BLOCK_NAME) is not { } lowerBlock) return;
+			if (FindEntityByName(transaction, document, GlobalData.UPPER_BLOCK_NAME) is not { } upperBlock) return;
+			if (FindEntityByName(transaction, document, GlobalData.LOWER_BLOCK_NAME) is not { } lowerBlock) return;
 
 			if (GetLine(transaction, editor) is not { } line) return;
 
@@ -71,6 +71,17 @@ namespace AutoCAD_Align_Structure
 
 			transaction.Commit();
 			return;
+
+			static bool LoadRecords()
+			{
+				var loader = new BlockTableRecordLoader();
+				if (loader.InsertBlockTableRecordFromFile(FilePathUtils.GetFilePath(GlobalData.RESOURCES_PATH_NAME, GlobalData.DWG_FILE_NAME), GlobalData.UPPER_BLOCK_NAME, GlobalData.LOWER_BLOCK_NAME).ToList() is not { Count: 2 })
+				{
+					Application.ShowAlertDialog("Loading BlockTableRecord failed. Plugin might not work correctly");
+					return false;
+				}
+				return true;
+			}
 
 			static (double width, double height) GetExtents(Transaction transaction, BlockReference blockRef)
 			{
